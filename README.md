@@ -1,30 +1,3 @@
- AI-Powered Data Cleaning and Preprocessing Tool
-
-This is a Streamlit application that allows users to upload spreadsheet files (CSV, XLS, XLSX) and perform data cleaning and preprocessing with the help of OpenAI's language model. The application analyzes the uploaded data, identifies potential data quality issues, and provides recommendations for cleaning and preprocessing. Users can then provide feedback or additional instructions, and the application will generate and execute Python code to clean and preprocess the data accordingly.
-
-## Features
-
-- File uploader to load spreadsheet data (CSV, XLS, XLSX)
-- Data preview and description
-- AI-powered data quality analysis using OpenAI's language model
-- User feedback input for data cleaning and preprocessing instructions
-- Automated generation of Python code for data cleaning and preprocessing
-- Validation and safe execution of the generated code
-- Display of cleaned and preprocessed data
-
-## Installation
-
-1. Clone the repository or download the source code.
-2. Install the required Python packages: streamlit pandas plotly langchain openai
-3. Set up your OpenAI API key as an environment variable:
-
-## Usage
-
-1. Run the Streamlit application: streamlit run app.py
-markdown
-
-
-Copy code
 # AI-Powered Data Cleaning and Preprocessing Tool
 
 This is a Streamlit application that allows users to upload spreadsheet files (CSV, XLS, XLSX) and perform data cleaning and preprocessing with the help of OpenAI's language model. The application analyzes the uploaded data, identifies potential data quality issues, and provides recommendations for cleaning and preprocessing. Users can then provide feedback or additional instructions, and the application will generate and execute Python code to clean and preprocess the data accordingly.
