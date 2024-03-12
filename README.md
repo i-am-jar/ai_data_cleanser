@@ -15,12 +15,7 @@ This is a Streamlit application that allows users to upload spreadsheet files (C
 ## Installation
 
 1. Clone the repository or download the source code.
-2. Install the required Python packages:
-pip install streamlit pandas plotly langchain openai
-
-
-Copy code
-
+2. Install the required Python packages: pip install streamlit pandas plotly langchain openai
 3. Set up your OpenAI API key as an environment variable:
 export OPENAI_API_KEY=<your_openai_api_key>
 
