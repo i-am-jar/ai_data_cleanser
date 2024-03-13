@@ -5,7 +5,7 @@ This is a Streamlit application that allows users to upload spreadsheet files (C
 ## Features
 
 - File uploader to load spreadsheet data (CSV, XLS, XLSX)
-- Data preview and description
+- Data preview and descsription
 - AI-powered data quality analysis using OpenAI's language model
 - User feedback input for data cleaning and preprocessing instructions
 - Automated generation of Python code for data cleaning and preprocessing
@@ -18,9 +18,6 @@ This is a Streamlit application that allows users to upload spreadsheet files (C
 2. Install the required Python packages: pip install streamlit pandas plotly langchain openai
 3. Set up your OpenAI API key as an environment variable:
 export OPENAI_API_KEY=<your_openai_api_key>
-
-
-Copy code
 
 ## Usage
 
