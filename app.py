@@ -1,19 +1,24 @@
 import streamlit as st
 import pandas as pd
 from langchain import OpenAI, PromptTemplate, LLMChain
+import ast
 
 import os
-os.environ["OPENAI_API_KEY"] = "API KEY HERE"
+os.environ["OPENAI_API_KEY"] = "ENTER API KEY HERE"
 
 
 def load_data(file):
     # Load data from the uploaded file
-    if file.name.endswith('.csv'):
-        df = pd.read_csv(file)
-    elif file.name.endswith(('.xls', '.xlsx')):
-        df = pd.read_excel(file)
-    else:
-        st.error('Unsupported file format')
+    try:
+        if file.name.endswith('.csv'):
+            df = pd.read_csv(file)
+        elif file.name.endswith(('.xls', '.xlsx')):
+            df = pd.read_excel(file)
+        else:
+            st.error('Unsupported file format')
+            return None
+    except Exception as e:
+        st.error(f'Error loading data: {e}')
         return None
     return df
 
@@ -31,10 +36,33 @@ def check_data_quality(df):
     chain = LLMChain(llm=llm, prompt=prompt)
 
     # Generate data quality insights
-    data_description = df.describe().to_string()
-    quality_insights = chain.run(data_description)
+    try:
+        data_description = df.describe().to_string()
+        quality_insights = chain.run(data_description)
+    except Exception as e:
+        st.error(f'Error generating data quality insights: {e}')
+        quality_insights = None
 
     return quality_insights
+
+def validate_and_execute_code(code, df):
+    try:
+        # Validate the code for syntax errors
+        ast.parse(code)
+    except SyntaxError as e:
+        st.error(f"Syntax Error in the generated code: {e}")
+        return
+
+    # Create a local namespace for safe execution
+    local_namespace = {"pd": pd, "df": df}
+
+    try:
+        # Execute the code in a safe environment
+        exec(code, {}, local_namespace)
+        st.write('Cleaned and preprocessed data preview:')
+        st.write(local_namespace['df'].head())
+    except Exception as e:
+        st.error(f'Error executing code: {e}')
 
 def main():
     st.title('AI-Powered Data Cleaning and Preprocessing Tool')
@@ -51,13 +79,17 @@ def main():
 
             # Check data quality
             quality_insights = check_data_quality(df)
-            st.write('Data Quality Insights:')
-            st.write(quality_insights)
+            if quality_insights:
+                st.write('Data Quality Insights:')
+                st.write(quality_insights)
+            else:
+                st.warning('No data quality insights available.')
 
             # Get user feedback
             user_feedback = st.text_area('Enter your feedback or additional instructions for data cleaning and preprocessing:')
 
-            if user_feedback:
+            # Add a button to generate code
+            if st.button('Generate Code'):
                 # Use OpenAI and LangChain to generate code for data cleaning and preprocessing
                 llm = OpenAI(temperature=0.7)
                 code_prompt = PromptTemplate(
@@ -65,15 +97,17 @@ def main():
                     template="Based on the following data description and user feedback, generate Python code for cleaning and preprocessing the data: \n\nData Description: {data_description}\n\nUser Feedback: {user_feedback}"
                 )
                 chain = LLMChain(llm=llm, prompt=code_prompt)
-                code_output = chain.run(data_description=data_description, user_feedback=user_feedback)
+                try:
+                    code_output = chain.run(data_description=data_description, user_feedback=user_feedback)
+                except Exception as e:
+                    st.error(f'Error generating code: {e}')
+                    return
 
                 st.code(code_output, language='python')
 
-                # Execute the generated code
-                exec(code_output)
-
-                st.write('Cleaned and preprocessed data preview:')
-                st.write(df.head())
+                # Add a run button
+                if st.button('Run Code'):
+                    validate_and_execute_code(code_output, df)
 
 if __name__ == '__main__':
     main()
